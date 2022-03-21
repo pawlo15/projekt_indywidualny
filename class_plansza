@@ -1,0 +1,22 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Robot_csharp
+{
+    class Plansza
+    {
+        public int x_max;
+        public int y_max;
+        public bool[,] punkty;
+        protected Plansza(int x, int y)
+        {
+            x_max = x;
+            y_max = y;
+            punkty = new bool[x, y];
+        }
+        virtual public void Rysuj() { }
+    }
+}
