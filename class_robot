@@ -1,0 +1,164 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Robot_csharp
+{
+    class Robot : Plansza
+    {
+        protected int x_pos;
+        protected int y_pos;
+        public Robot(int x, int y, int pozycja_x, int pozycja_y)
+        : base(x, y)
+        {
+            x_pos = pozycja_x;
+            y_pos = pozycja_y;
+        }
+        public override void Rysuj()
+        {
+            base.Rysuj();
+            for (int i = y_max - 1; i >= 0; i--)
+            {
+                Console.Write(i + "  ");
+                for (int j = 0; j < x_max; j++)
+                {
+                    if (x_pos == j && y_pos == i)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.Write("TU ");
+                        Console.ForegroundColor = ConsoleColor.White;
+                    }
+                    else
+                    {
+                        if (punkty[j, i] == true)
+                        {
+                            Console.ForegroundColor = ConsoleColor.Green;
+                            Console.Write("X  ");
+                            Console.ForegroundColor = ConsoleColor.White;
+                        }
+                        else
+                            Console.Write("O  ");
+                    }
+                }
+                Console.WriteLine();
+            }
+            Console.Write("XY ");
+            for (int i = 0; i < x_max; i++)
+            {
+                Console.Write(i + "  ");
+            }
+            Console.WriteLine("");
+        }
+        public void Ruch_w_Lewo()
+        {
+            if (Obszar(-1, 0))
+            {
+                Zapisz_pozycje();
+                x_pos--;
+            }
+            else
+                Komunikat();
+        }
+        public void Ruch_w_Prawo()
+        {
+            if (Obszar(1, 0))
+            {
+                Zapisz_pozycje();
+                x_pos++;
+            }
+            else
+                Komunikat();
+        }
+        public void Ruch_w_Gore()
+        {
+            if (Obszar(0, 1))
+            {
+                Zapisz_pozycje();
+                y_pos++;
+            }
+            else
+                Komunikat();
+        }
+        public void Ruch_w_Dol()
+        {
+            if (Obszar(0, -1))
+            {
+                Zapisz_pozycje();
+                y_pos--;
+            }
+            else
+                Komunikat();
+        }
+        public void Ruch_w_Lewo(int vector)
+        {
+            if (Obszar(-vector, 0))
+            {
+                Zapisz_pozycje();
+                x_pos -= vector;
+            }
+            else
+                Komunikat();
+        }
+        public void Ruch_w_Prawo(int vector)
+        {
+            if (Obszar(vector, 0))
+            {
+                Zapisz_pozycje();
+                x_pos += vector;
+            }
+            else
+                Komunikat();
+        }
+        public void Ruch_w_Gore(int vector)
+        {
+            if (Obszar(0, vector))
+            {
+                Zapisz_pozycje();
+                y_pos += vector;
+            }
+            else
+                Komunikat();
+        }
+        public void Ruch_w_Dol(int vector)
+        {
+            if (Obszar(0, -vector))
+            {
+                Zapisz_pozycje();
+                y_pos -= vector;
+            }
+            else
+                Komunikat();
+        }
+        public void Reset()
+        {
+            x_pos = 0;
+            y_pos = 0;
+            for (int i = 0; i < x_max; i++)
+            {
+                for (int j = 0; j < y_max; j++)
+                {
+                    punkty[i, j] = false;
+                }
+            }
+        }
+        private void Zapisz_pozycje()
+        {
+            punkty[x_pos, y_pos] = true;
+        }
+        private bool Obszar(int do_x, int do_y)
+        {
+            if ((x_max > (x_pos + do_x) && (x_pos + do_x) >= 0) && (y_max > (y_pos + do_y) && (y_pos + do_y) >= 0))
+            {
+                return true;
+            }
+            else
+                return false;
+        }
+        private void Komunikat()
+        {
+            Console.WriteLine("Zły ruch");
+        }
+    }
+}
