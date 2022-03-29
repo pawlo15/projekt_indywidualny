@@ -1,8 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Robot_csharp
 {
@@ -10,11 +6,20 @@ namespace Robot_csharp
     {
         protected int x_pos;
         protected int y_pos;
+
+        protected bool first00;
+
+        protected int x_first;
+        protected int y_first;
         public Robot(int x, int y, int pozycja_x, int pozycja_y)
         : base(x, y)
         {
-            x_pos = pozycja_x;
-            y_pos = pozycja_y;
+            x_pos = x_first = pozycja_x;
+            y_pos = y_first = pozycja_y;
+            if ((pozycja_x == 0) && (pozycja_y == 0))
+                first00 = true;
+            else
+                first00 = false;
         }
         public override void Rysuj()
         {
@@ -95,8 +100,11 @@ namespace Robot_csharp
         {
             if (Obszar(-vector, 0))
             {
-                Zapisz_pozycje();
-                x_pos -= vector;
+                for (int i = vector; i > 0; i--)
+                {
+                    Zapisz_pozycje();
+                    x_pos--;
+                }
             }
             else
                 Komunikat();
@@ -105,8 +113,11 @@ namespace Robot_csharp
         {
             if (Obszar(vector, 0))
             {
-                Zapisz_pozycje();
-                x_pos += vector;
+                for (int i = vector; i > 0; i--)
+                {
+                    Zapisz_pozycje();
+                    x_pos++;
+                }
             }
             else
                 Komunikat();
@@ -115,8 +126,11 @@ namespace Robot_csharp
         {
             if (Obszar(0, vector))
             {
-                Zapisz_pozycje();
-                y_pos += vector;
+                for (int i = vector; i > 0; i--)
+                {
+                    Zapisz_pozycje();
+                    y_pos++;
+                }
             }
             else
                 Komunikat();
@@ -125,16 +139,33 @@ namespace Robot_csharp
         {
             if (Obszar(0, -vector))
             {
-                Zapisz_pozycje();
-                y_pos -= vector;
+                for (int i = vector; i > 0; i--)
+                {
+                    Zapisz_pozycje();
+                    y_pos--;
+                }
             }
             else
                 Komunikat();
         }
         public void Reset()
         {
-            x_pos = 0;
-            y_pos = 0;
+            string quest;
+            if (first00 == true)
+                { x_pos = 0; y_pos = 0; }
+            else
+            {               
+                do
+                {
+                    Console.WriteLine("Czy chcesz zacząć od punktu [0;0] ? Y/N");
+                    quest = Console.ReadLine().ToUpper();
+                } while (quest != "Y" && quest != "N");
+                if (quest == "Y")
+                    { x_pos = 0; y_pos = 0; }
+                else
+                    { x_pos = x_first; y_pos = y_first; }
+            }
+            Console.WriteLine("Ustawiono punkt początkowy [" + x_pos + ";" + y_pos + "]");
             for (int i = 0; i < x_max; i++)
             {
                 for (int j = 0; j < y_max; j++)
