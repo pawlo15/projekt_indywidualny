@@ -1,145 +1,102 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Robot_csharp
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
-            Console.WriteLine("Programistyczny Projekt Indywidualny\n");
-
-            Robot robocik = Wprowadzanie();
-
-            string input_stream_cmd, polecenie;
+            string input_stream_cmd, command;
             int end_possition;
             int what_number = 0;
-            bool is_number, is_polecenie;
+            bool is_number, is_command;
+
+            Console.WriteLine("Programistyczny Projekt Indywidualny\n");
+            Robot robocik = Wprowadzanie();            
             Console.Clear();
             robocik.Rysuj();
-            do
+            while(true)            
             {
                 Console.Write(">> ");
-                input_stream_cmd = Console.ReadLine();                          // wprowadzenie znaków oraz usunięcie odstępów
+                input_stream_cmd = Console.ReadLine()+";";      // wprowadzenie znaków oraz usunięcie odstępów
                 input_stream_cmd = Usuwanie(input_stream_cmd.ToUpper(),' ');
-                is_polecenie = false;
+                is_command = false;
+                robocik.czy_komunikat = false;
                 do
                 {
                     end_possition = input_stream_cmd.IndexOf(';');
                     if (end_possition > -1)
                     {
-                        polecenie = input_stream_cmd.Remove(end_possition);     // wycięcie polecenia do ';'
-                        is_number = Wystepuje_liczba(polecenie);                       
+                        command = input_stream_cmd.Remove(end_possition);     // wycięcie polecenia do ';'
+                        is_number = Wystepuje_liczba(command);                       
                         if (is_number)                                          // sprawdzenie czy w poleceniu występuje liczba
                         {
-                            what_number = Wytnij_liczbe(polecenie);             // wycięcie liczby z polecenia
-                            polecenie = Wytnij_Polecenie(polecenie);
+                            what_number = Wytnij_liczbe(command);             // wycięcie liczby z polecenia
+                            command = Wytnij_Polecenie(command);
                         }
-                        if (is_number)                                          // jeżeli jest liczba
+                        switch (command) // wykonanie polecenia
                         {
-                            switch (polecenie)
-                            {
-                                case "UP":
-                                    is_polecenie = true;
+                            case "UP":
+                                is_command = true;
+                                if (is_number)                                    
                                     robocik.Ruch_w_Gore(what_number);
-                                    break;
+                                else                                   
+                                    robocik.Ruch_w_Gore(1);                                                                      
+                                break;
 
-                                case "DOWN":
-                                    is_polecenie = true;
+                            case "DOWN":
+                                is_command = true;
+                                if (is_number)
                                     robocik.Ruch_w_Dol(what_number);
-                                    break;
+                                else
+                                    robocik.Ruch_w_Dol(1);
+                                break;
 
-                                case "LEFT":
-                                    is_polecenie = true;
+                            case "LEFT":
+                                is_command = true;
+                                if (is_number)
                                     robocik.Ruch_w_Lewo(what_number);
-                                    break;
+                                else
+                                    robocik.Ruch_w_Lewo(1);
+                                break;
 
-                                case "RIGHT":
-                                    is_polecenie = true;
+                            case "RIGHT":
+                                is_command = true;
+                                if (is_number)
                                     robocik.Ruch_w_Prawo(what_number);
-                                    break;
+                                else
+                                    robocik.Ruch_w_Prawo(1);
+                                break;
 
-                                case "RESET":
-                                    is_polecenie = true;
-                                    robocik.Reset();
-                                    break;
+                            case "RESET":
+                                is_command = true;
+                                robocik.Reset();
+                                break;
 
-                                case "SKIP":
-                                    is_polecenie = true;
-                                    Console.WriteLine("SKIP " + what_number);
-                                    break;
+                            case "SKIP":
+                                is_command = true;
+                                break;
 
-                                case "HELP":
-                                    Help();
-                                    break;
+                            case "HELP":
+                                Help();
+                                break;
 
-                                case "EXIT":
-                                    goto koniec;
+                            case "EXIT":
+                                goto koniec;
 
-                                default:
-                                    Console.WriteLine("BAD_COMMAND " + what_number);
-                                    break;
-                            }
-                        }
-                        else                                                    // jeżeli nie ma liczby
-                        {
-                            switch (polecenie)
-                            {
-                                case "UP":
-                                    is_polecenie = true;
-                                    robocik.Ruch_w_Gore();
-                                    break;
-
-                                case "DOWN":
-                                    is_polecenie = true;
-                                    robocik.Ruch_w_Dol();
-                                    break;
-
-                                case "LEFT":
-                                    is_polecenie = true;
-                                    robocik.Ruch_w_Lewo();
-                                    break;
-
-                                case "RIGHT":
-                                    is_polecenie = true;
-                                    robocik.Ruch_w_Prawo();
-                                    break;
-
-                                case "RESET":
-                                    is_polecenie = true;
-                                    robocik.Reset();
-                                    break;
-
-                                case "SKIP":
-                                    is_polecenie = true;
-                                    Console.WriteLine("SKIP");
-                                    break;
-
-                                case "HELP":
-                                    Help();
-                                    break;
-
-                                case "EXIT":
-                                    goto koniec;
-
-                                default:
-                                    Console.WriteLine("BAD_COMMAND - USE 'HELP;' TO SHOW MORE COMMAND");
-                                    break;
-                            }
-                        }
+                            default:
+                                Console.WriteLine("BAD_COMMAND - USE 'HELP' TO SHOW MORE COMMAND");
+                                break;
+                        }                       
                     }
                     input_stream_cmd = input_stream_cmd.Substring(end_possition + 1);
                 } while (end_possition != -1);
-                if (is_polecenie)
+                if (is_command)
                 {
                     Console.Clear();
                     robocik.Rysuj();
                 }               
-            } while (input_stream_cmd != "EXIT");
-
+            }
                 koniec:
             Console.WriteLine("Wyłączono program");
             Console.ReadKey();
@@ -158,7 +115,7 @@ namespace Robot_csharp
         {
             for (int i = 0; i < user_polecenie.Length; i++)
             {
-                if ((CzyCyfra(user_polecenie[i])) && (user_polecenie[i] != '0'))
+                if (CzyCyfra(user_polecenie[i]))
                 {
                     return true;
                 }
@@ -167,13 +124,9 @@ namespace Robot_csharp
         }
         public static bool CzyCyfra(char user_c)
         {
-            char[] cyfry = { '1', '2', '3', '4', '5', '6', '7', '8', '9', '0' };
-            for (int j = 0; j < cyfry.Length; j++)
+            if (('0'<=user_c)&&(user_c<='9'))
             {
-                if (user_c == cyfry[j])
-                {
-                    return true;
-                }
+                return true;
             }
             return false;
         }
@@ -196,11 +149,9 @@ namespace Robot_csharp
                     nowy = nowy.Remove(i);
                     break;
                 }
-            }
-            for (int i = 0; i < nowy.Length; i++)
-            {
+            }        
+            for (int i = 0; i < nowy.Length; i++)            
                 number_to_send += (int)(Ascii_zmiana(nowy[i]) * Math.Pow(10, nowy.Length - i - 1));
-            }
             return number_to_send;
         }
         public static int Ascii_zmiana(int code)
@@ -233,24 +184,33 @@ namespace Robot_csharp
         }
         public static void Help()
         {
-            Console.WriteLine("\nDostępne komendy:\nup;\tup n;\ndown;\tdown n;\nleft;\tleft n;\nright;\tright n;\nreset;\tskip;\noff\nn - dowolna liczba mieszcząca się w tablicy\nUWAGA!\tUWAGA!\tUWAGA!");
-            Console.WriteLine("Aby program potraktował wpisany tekst jako komendę potrzebny jest znak ';'\nWyjątkiem jest komenda 'off' służąca wyłączeniu programu\n\n");
+            Console.WriteLine("----------------------------");
+            Console.WriteLine(" Dostępne komendy:");
+            Console.WriteLine("----------------------------");
+            Console.WriteLine(" up\t\tup n\n down\t\tdown n\n left\t\tleft n\n right\t\tright n\n reset\t\tskip\n exit");
+            Console.WriteLine("----------------------------");
+            Console.WriteLine(" n - dowolna liczba mieszcząca się w tablicy");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("\n\tUWAGA!\tUWAGA!\tUWAGA!");            
+            Console.WriteLine(" Jeżeli chcesz wpisać kilka komend w jednym wierszu, oddziel je ';'");
+            Console.ForegroundColor = ConsoleColor.White;
         }
         public static Robot Wprowadzanie() 
         {
-            int rozmiar_x, rozmiar_y, start_x, start_y;
+            int rozmiar_x, rozmiar_y, start_x, start_y;           
+            string answer, input_string;
+            bool check;
+
             rozmiar_x = rozmiar_y = start_x = start_y = 0;
-            string quest1, quest2, temp;
-            bool temp2;
             // sprawdzenie poprawności danych
             // sprawdzenie czy pozycja jest w planszy
             Console.WriteLine("Menu tworzenia nowej planszy i wyboru pozycji robota.");
             do
             {
                 Console.WriteLine("Czy chcesz, aby stworzyć standardową planszę [10;10]? Y/N");
-                quest1 = Console.ReadLine().ToUpper();
-            } while (quest1 != "Y" && quest1 != "N");
-            if (quest1=="Y")
+                answer = Console.ReadLine().ToUpper();
+            } while (answer != "Y" && answer != "N");
+            if (answer=="Y")
             {
                 rozmiar_x = 10;
                 rozmiar_y = 10;
@@ -261,33 +221,37 @@ namespace Robot_csharp
                 {
                     Console.WriteLine("Obliczana jest wartość |Absolute| liczby. Rozmiar planszy musi być z przedziału [1;50]");
                     Console.WriteLine("Podaj szerokość planszy: ");
-                    temp = Console.ReadLine();
-                    temp2 = Wystepuje_liczba(temp);
-                    if (temp2)
+                    input_string = Console.ReadLine();
+                    check = Wystepuje_liczba(input_string);
+                    if (check)
                     {
-                        rozmiar_x = Wytnij_liczbe(temp);
+                        rozmiar_x = Wytnij_liczbe(input_string);
                     }
-                } while ((temp2 != true) || (temp2 == true && rozmiar_x > 50));
+                } while ((check != true) || (check == true && rozmiar_x > 50));
+                Console.ForegroundColor = ConsoleColor.Magenta;
                 Console.WriteLine("Szerokość planszy wynosi " + rozmiar_x);
+                Console.ForegroundColor = ConsoleColor.White;
                 do
                 {
                     Console.WriteLine("Obliczana jest wartość |Absolute| liczby. Rozmiar planszy musi być z przedziału [1;50]");
                     Console.WriteLine("Podaj wysokość planszy: ");
-                    temp = Console.ReadLine();
-                    temp2 = Wystepuje_liczba(temp);
-                    if (temp2)
+                    input_string = Console.ReadLine();
+                    check = Wystepuje_liczba(input_string);
+                    if (check)
                     {
-                        rozmiar_y = Wytnij_liczbe(temp);
+                        rozmiar_y = Wytnij_liczbe(input_string);
                     }
-                } while ((temp2 != true) || (temp2 == true && rozmiar_y > 50));
+                } while ((check != true) || (check == true && rozmiar_y > 50));
+                Console.ForegroundColor = ConsoleColor.Magenta;
                 Console.WriteLine("Wysokość planszy wynosi " + rozmiar_y);
+                Console.ForegroundColor = ConsoleColor.White;
             }
             do
             {
                 Console.WriteLine("Czy chcesz ustawić standardową pozycję początkową robota [0;0] ? Y/N");
-                quest2 = Console.ReadLine().ToUpper();
-            } while (quest2 != "Y" && quest2 != "N");
-            if (quest2 == "Y")
+                answer = Console.ReadLine().ToUpper();
+            } while (answer != "Y" && answer != "N");
+            if (answer == "Y")
             {
                 start_x = 0;
                 start_y = 0;
@@ -298,24 +262,24 @@ namespace Robot_csharp
                 {
                     Console.WriteLine("Obliczana jest wartość |Absolute| liczby. Współrzędne muszą być z zakresu [0;"+(rozmiar_x-1)+"]");
                     Console.WriteLine("Podaj wpółrzędną x: ");
-                    temp = Console.ReadLine();
-                    temp2 = Wystepuje_liczba(temp);
-                    if (temp2)
+                    input_string = Console.ReadLine();
+                    check = Wystepuje_liczba(input_string);
+                    if (check)
                     {
-                        start_x = Wytnij_liczbe(temp);
+                        start_x = Wytnij_liczbe(input_string);
                     }
-                } while ((temp2 != true) || (temp2 == true && start_x > (rozmiar_x-1)));
+                } while ((check != true) || (check == true && start_x > (rozmiar_x-1)));
                 do
                 {
                     Console.WriteLine("Obliczana jest wartość |Absolute| liczby. Współrzędne muszą być z zakresu [0;" + (rozmiar_y - 1) + "]");
                     Console.WriteLine("Podaj wpółrzędną y: ");
-                    temp = Console.ReadLine();
-                    temp2 = Wystepuje_liczba(temp);
-                    if (temp2)
+                    input_string = Console.ReadLine();
+                    check = Wystepuje_liczba(input_string);
+                    if (check)
                     {
-                        start_y = Wytnij_liczbe(temp);
+                        start_y = Wytnij_liczbe(input_string);
                     }
-                } while ((temp2 != true) || (temp2 == true && start_y > (rozmiar_y - 1)));
+                } while ((check != true) || (check == true && start_y > (rozmiar_y - 1)));
             }
             Robot nowy_obiekt = new Robot(rozmiar_x, rozmiar_y, start_x, start_y);
             return nowy_obiekt;
