@@ -2,9 +2,9 @@ namespace Robot_csharp
 {
     class Plansza
     {
-        public int x_max;
-        public int y_max;
-        public bool[,] punkty;
+        protected int x_max;
+        protected int y_max;
+        protected bool[,] punkty;
         protected Plansza(int x, int y)
         {
             x_max = x;
