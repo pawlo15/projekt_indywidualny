@@ -7,10 +7,11 @@ namespace Robot_csharp
         protected int x_pos;
         protected int y_pos;
 
-        protected bool first00;
+        private bool first00;
+        public bool czy_komunikat;
 
-        protected int x_first;
-        protected int y_first;
+        private int x_first;
+        private int y_first;
         public Robot(int x, int y, int pozycja_x, int pozycja_y)
         : base(x, y)
         {
@@ -26,76 +27,54 @@ namespace Robot_csharp
             base.Rysuj();
             for (int i = y_max - 1; i >= 0; i--)
             {
-                Console.Write(i + "  ");
+                if (i<10)
+                {
+                    Console.Write("0"+i+"   ");                   
+                }
+                else
+                    Console.Write(i + "   ");
                 for (int j = 0; j < x_max; j++)
                 {
                     if (x_pos == j && y_pos == i)
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.Write("TU ");
+                        Console.Write("TU  ");
                         Console.ForegroundColor = ConsoleColor.White;
                     }
                     else
                     {
                         if (punkty[j, i] == true)
-                        {
-                            Console.ForegroundColor = ConsoleColor.Green;
-                            Console.Write("X  ");
-                            Console.ForegroundColor = ConsoleColor.White;
+                        {                            
+                                Console.ForegroundColor = ConsoleColor.Green;
+                                Console.Write("X   ");
+                                Console.ForegroundColor = ConsoleColor.White;
                         }
                         else
-                            Console.Write("O  ");
+                        {
+                                Console.Write("O   ");
+                        }
+                            
                     }
                 }
                 Console.WriteLine();
             }
-            Console.Write("XY ");
+            Console.Write("\nXY   ");
             for (int i = 0; i < x_max; i++)
             {
-                Console.Write(i + "  ");
+                if (i<10)
+                {
+                    Console.Write(i + "   ");
+                }
+                else
+                    Console.Write(i + "  ");
             }
             Console.WriteLine("");
-        }
-        public void Ruch_w_Lewo()
-        {
-            if (Obszar(-1, 0))
+            if (czy_komunikat == true)
             {
-                Zapisz_pozycje();
-                x_pos--;
-            }
-            else
                 Komunikat();
-        }
-        public void Ruch_w_Prawo()
-        {
-            if (Obszar(1, 0))
-            {
-                Zapisz_pozycje();
-                x_pos++;
             }
-            else
-                Komunikat();
         }
-        public void Ruch_w_Gore()
-        {
-            if (Obszar(0, 1))
-            {
-                Zapisz_pozycje();
-                y_pos++;
-            }
-            else
-                Komunikat();
-        }
-        public void Ruch_w_Dol()
-        {
-            if (Obszar(0, -1))
-            {
-                Zapisz_pozycje();
-                y_pos--;
-            }
-            else
-                Komunikat();
-        }
+        
         public void Ruch_w_Lewo(int vector)
         {
             if (Obszar(-vector, 0))
@@ -107,7 +86,7 @@ namespace Robot_csharp
                 }
             }
             else
-                Komunikat();
+                czy_komunikat = true;
         }
         public void Ruch_w_Prawo(int vector)
         {
@@ -120,7 +99,7 @@ namespace Robot_csharp
                 }
             }
             else
-                Komunikat();
+                czy_komunikat = true;
         }
         public void Ruch_w_Gore(int vector)
         {
@@ -133,7 +112,7 @@ namespace Robot_csharp
                 }
             }
             else
-                Komunikat();
+                czy_komunikat = true;
         }
         public void Ruch_w_Dol(int vector)
         {
@@ -146,7 +125,7 @@ namespace Robot_csharp
                 }
             }
             else
-                Komunikat();
+                czy_komunikat = true;
         }
         public void Reset()
         {
@@ -189,7 +168,7 @@ namespace Robot_csharp
         }
         private void Komunikat()
         {
-            Console.WriteLine("Zły ruch");
+            Console.WriteLine("Próba wykonania ruchu po za planszę.");
         }
     }
 }
